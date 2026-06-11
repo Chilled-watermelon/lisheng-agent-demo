@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
       // 手机访问时按桌面版宽度等比缩放展示（管理后台信息密度高，缩放浏览体验优于挤压布局）
-      if (screen.width < 768) {
+      if (Math.min(screen.width, window.innerWidth) < 768) {
         document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=1366, user-scalable=yes')
       }
     </script>
