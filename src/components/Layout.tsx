@@ -2,14 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, BrainCircuit, PlugZap, BellRing,
-  TrendingUp, Search, Sparkles, LogOut,
+  TrendingUp, Search, Sparkles, LogOut, Wand2, BadgeCheck,
 } from 'lucide-react'
-import { CUSTOMERS } from '../data/customers'
+import { getAllCustomers, useStoreVersion } from '../data/store'
+import { LICENSE, daysLeft, analysisLeft } from '../lib/license'
 import { GradeBadge, Flag } from './ui'
 
 const NAV = [
   { to: '/dashboard', label: '仪表盘', icon: LayoutDashboard },
   { to: '/customers', label: '客户知识库', icon: Users },
+  { to: '/analyze', label: 'AI 分析工作台', icon: Wand2 },
   { to: '/sales', label: '销售跟进监控', icon: TrendingUp },
   { to: '/ai', label: 'AI 分析中心', icon: BrainCircuit },
   { to: '/integrations', label: '数据接入', icon: PlugZap },
@@ -18,6 +20,7 @@ const NAV = [
 const TITLES: Record<string, string> = {
   '/dashboard': '经营仪表盘',
   '/customers': '客户知识库',
+  '/analyze': 'AI 分析工作台',
   '/sales': '销售跟进监控',
   '/ai': 'AI 分析中心',
   '/integrations': '数据接入中心',
@@ -46,17 +49,18 @@ export default function Layout() {
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
+  const storeVersion = useStoreVersion()
   const results = useMemo(() => {
     const q = kw.trim().toLowerCase()
     if (!q) return []
-    return CUSTOMERS.filter(c =>
+    return getAllCustomers().filter(c =>
       c.name.toLowerCase().includes(q) ||
       c.phone.replace(/\s/g, '').includes(q) ||
       c.country.includes(q) ||
       (c.company ?? '').toLowerCase().includes(q) ||
       c.tags.some(t => t.toLowerCase().includes(q)),
     ).slice(0, 6)
-  }, [kw])
+  }, [kw, storeVersion])
 
   const go = (id: string) => {
     setKw('')
@@ -111,6 +115,15 @@ export default function Layout() {
             </div>
             <div className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
               今日已分析 247 段对话<br />更新 48 位客户画像
+            </div>
+          </div>
+          <div className="mt-3 rounded-xl bg-amber-500/10 border border-amber-400/20 p-3">
+            <div className="flex items-center gap-1.5 text-amber-300 text-[12px] font-medium">
+              <BadgeCheck size={13} /> {LICENSE.edition}授权 · {LICENSE.licensee}
+            </div>
+            <div className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+              有效期至 {LICENSE.expiry}（剩 {daysLeft()} 天）<br />
+              AI 分析额度剩余 {analysisLeft()} 次
             </div>
           </div>
           <div className="text-[10.5px] text-slate-500 mt-3 text-center">

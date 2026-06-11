@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sparkles, ShieldCheck, BrainCircuit, Database, Lock, User, ArrowRight } from 'lucide-react'
+import { Sparkles, ShieldCheck, BrainCircuit, Database, Lock, User, ArrowRight, AlarmClock } from 'lucide-react'
+import { LICENSE, isLicenseValid } from '../lib/license'
 
 export default function Login() {
   const navigate = useNavigate()
   const [account, setAccount] = useState('admin@lisheng.com')
   const [password, setPassword] = useState('••••••••')
   const [loading, setLoading] = useState(false)
+  const valid = isLicenseValid()
 
   const login = () => {
+    if (!valid) return
     setLoading(true)
     setTimeout(() => {
       sessionStorage.setItem('ls_auth', '1')
@@ -89,13 +92,22 @@ export default function Login() {
                     className="flex-1 text-[14px] outline-none text-slate-700" />
                 </div>
               </div>
-              <button onClick={login} disabled={loading}
-                className="w-full mt-2 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium text-[14.5px] rounded-xl py-3 transition-all disabled:opacity-70">
-                {loading ? '正在登录…' : <>进入系统 <ArrowRight size={16} /></>}
-              </button>
+              {valid ? (
+                <button onClick={login} disabled={loading}
+                  className="w-full mt-2 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium text-[14.5px] rounded-xl py-3 transition-all disabled:opacity-70">
+                  {loading ? '正在登录…' : <>进入系统 <ArrowRight size={16} /></>}
+                </button>
+              ) : (
+                <div className="mt-2 flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+                  <AlarmClock size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                  <div className="text-[12.5px] text-amber-800 leading-relaxed">
+                    试用授权已于 {LICENSE.expiry} 到期。如需继续使用并保留已沉淀的客户数据，请联系项目组开通正式版授权。
+                  </div>
+                </div>
+              )}
             </div>
             <div className="mt-6 pt-5 border-t border-slate-100 text-[12px] text-slate-400 leading-relaxed">
-              演示环境说明：本系统为概念验证版本，已预置模拟数据，点击「进入系统」即可体验全部功能。正式版将对接企业账号体系（销售 / 主管 / 管理员三级权限）。
+              {LICENSE.edition}授权对象：{LICENSE.licensee} · 有效期至 {LICENSE.expiry}。试用版含 {LICENSE.analysisQuota} 次 AI 分析额度，可在「AI 分析工作台」粘贴真实聊天记录体验分析效果；正式版由 WhatsApp 实时同步自动分析，不限次数。
             </div>
           </div>
           <div className="text-center text-[11.5px] text-slate-400 mt-6">

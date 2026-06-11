@@ -1,14 +1,36 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   ArrowLeft, Phone, Globe, Languages, MessageCircle, Clock,
   Sparkles, AlertTriangle, RefreshCw, CalendarClock, UserCheck,
 } from 'lucide-react'
 import { Card, CardHeader, GradeBadge, Flag, StatusBadge, Tag, ScoreRing } from '../components/ui'
-import { CUSTOMERS } from '../data/customers'
+import { getAllCustomers, addFollowUp, setStatus, useStoreVersion } from '../data/store'
+import type { Customer } from '../data/types'
+
+const STATUS_OPTIONS: Customer['status'][] = ['新询盘', '跟进中', '已报价', '待成交', '已成交', '流失风险']
 
 export default function CustomerDetail() {
   const { id } = useParams()
-  const c = CUSTOMERS.find(x => x.id === id) ?? CUSTOMERS[0]
+  useStoreVersion()
+  const all = getAllCustomers()
+  const c = all.find(x => x.id === id) ?? all[0]
+  const [showForm, setShowForm] = useState(false)
+  const [action, setAction] = useState('')
+  const [note, setNote] = useState('')
+
+  const submitFollowUp = () => {
+    if (!action.trim()) return
+    addFollowUp(c.id, {
+      time: new Date().toISOString().slice(0, 16).replace('T', ' '),
+      by: '黄总',
+      action: action.trim(),
+      note: note.trim() || '—',
+    })
+    setAction('')
+    setNote('')
+    setShowForm(false)
+  }
 
   return (
     <div className="space-y-5">
@@ -26,6 +48,14 @@ export default function CustomerDetail() {
                 <h1 className="text-[20px] font-bold text-slate-800">{c.name}</h1>
                 <GradeBadge grade={c.grade} />
                 <StatusBadge status={c.status} />
+                <select
+                  value={c.status}
+                  onChange={e => setStatus(c.id, e.target.value as Customer['status'])}
+                  className="text-[11.5px] text-slate-500 border border-slate-200 rounded-md px-1.5 py-0.5 outline-none hover:border-emerald-300 cursor-pointer bg-white"
+                  title="变更客户状态"
+                >
+                  {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
                 {c.risk === '高' && (
                   <span className="inline-flex items-center gap-1 text-[11.5px] text-rose-600 bg-rose-50 border border-rose-200 rounded-md px-2 py-0.5">
                     <AlertTriangle size={11} /> 流失风险
@@ -148,8 +178,23 @@ export default function CustomerDetail() {
           {/* 跟进记录 */}
           <Card>
             <CardHeader title="销售跟进记录" sub={`负责人 ${c.owner} · 共 ${c.followUps.length} 条记录`} extra={
-              <button className="flex items-center gap-1 text-[12px] text-slate-600 border border-slate-200 rounded-lg px-2.5 py-1 hover:bg-slate-50"><UserCheck size={12} />添加跟进</button>
+              <button onClick={() => setShowForm(v => !v)}
+                className="flex items-center gap-1 text-[12px] text-slate-600 border border-slate-200 rounded-lg px-2.5 py-1 hover:bg-slate-50">
+                <UserCheck size={12} />{showForm ? '收起' : '添加跟进'}
+              </button>
             } />
+            {showForm && (
+              <div className="mx-5 mb-4 rounded-xl border border-emerald-200 bg-emerald-50/40 p-4 space-y-2.5">
+                <input value={action} onChange={e => setAction(e.target.value)} placeholder="跟进动作（如：发送报价单 / 电话回访）"
+                  className="w-full text-[13px] border border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-400 bg-white" />
+                <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="备注说明（可选）" rows={2}
+                  className="w-full text-[13px] border border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-400 resize-none bg-white" />
+                <button onClick={submitFollowUp} disabled={!action.trim()}
+                  className="text-[12.5px] text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg px-4 py-1.5 disabled:opacity-50">
+                  保存跟进记录
+                </button>
+              </div>
+            )}
             <div className="px-5 pb-5">
               {c.followUps.length === 0 ? (
                 <div className="text-[12.5px] text-slate-400 flex items-center gap-2"><Clock size={14} /> 暂无跟进记录，AI 已提醒销售 4 小时内首次响应</div>

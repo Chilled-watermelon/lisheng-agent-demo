@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Filter, Download, MessageCircle } from 'lucide-react'
 import { Card, GradeBadge, Flag, StatusBadge, Tag, ScoreRing } from '../components/ui'
-import { CUSTOMERS } from '../data/customers'
+import { getAllCustomers, useStoreVersion } from '../data/store'
 import type { Grade } from '../data/types'
 
 const GRADES: (Grade | '全部')[] = ['全部', 'A', 'B', 'C', 'D']
@@ -20,11 +20,12 @@ const STATS = [
 export default function Customers() {
   const [grade, setGrade] = useState<Grade | '全部'>('全部')
   const [kw, setKw] = useState('')
+  const storeVersion = useStoreVersion()
   const list = useMemo(() =>
-    CUSTOMERS.filter(c =>
+    getAllCustomers().filter(c =>
       (grade === '全部' || c.grade === grade) &&
       (kw === '' || c.name.toLowerCase().includes(kw.toLowerCase()) || c.country.includes(kw) || c.tags.some(t => t.includes(kw)))
-    ), [grade, kw])
+    ), [grade, kw, storeVersion])
 
   return (
     <div className="space-y-5">
