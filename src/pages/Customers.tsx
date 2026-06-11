@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Filter, Download, MessageCircle } from 'lucide-react'
-import { Card, GradeBadge, Flag, StatusBadge, Tag, ScoreRing } from '../components/ui'
+import { Card, GradeBadge, Flag, StatusBadge, Tag, ScoreRing, proToast } from '../components/ui'
 import { getAllCustomers, useStoreVersion } from '../data/store'
 import type { Grade } from '../data/types'
 
@@ -34,7 +34,8 @@ export default function Customers() {
           <h1 className="text-[20px] font-bold text-slate-800">客户知识库</h1>
           <p className="text-[13px] text-slate-400 mt-0.5">每位客户一份独立档案 · AI 自动建档、评分、打标签</p>
         </div>
-        <button className="flex items-center gap-1.5 text-[12.5px] text-slate-600 bg-white border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50">
+        <button onClick={() => proToast('导出客户数据')}
+          className="flex items-center gap-1.5 text-[12.5px] text-slate-600 bg-white border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50">
           <Download size={14} /> 导出客户数据
         </button>
       </div>

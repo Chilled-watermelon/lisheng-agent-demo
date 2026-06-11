@@ -4,7 +4,7 @@ import {
   ArrowLeft, Phone, Globe, Languages, MessageCircle, Clock,
   Sparkles, AlertTriangle, RefreshCw, CalendarClock, UserCheck,
 } from 'lucide-react'
-import { Card, CardHeader, GradeBadge, Flag, StatusBadge, Tag, ScoreRing } from '../components/ui'
+import { Card, CardHeader, GradeBadge, Flag, StatusBadge, Tag, ScoreRing, proToast } from '../components/ui'
 import { getAllCustomers, addFollowUp, setStatus, useStoreVersion } from '../data/store'
 import type { Customer } from '../data/types'
 
@@ -126,7 +126,7 @@ export default function CustomerDetail() {
             <CardHeader
               title="AI 客户画像"
               sub="基于全部聊天记录自动生成 · 最近更新 35 分钟前"
-              extra={<button className="flex items-center gap-1 text-[12px] text-emerald-600 border border-emerald-200 bg-emerald-50 rounded-lg px-2.5 py-1 hover:bg-emerald-100"><RefreshCw size={12} />重新分析</button>}
+              extra={<button onClick={() => proToast('一键重新分析（正式版由 WhatsApp 新消息自动触发）')} className="flex items-center gap-1 text-[12px] text-emerald-600 border border-emerald-200 bg-emerald-50 rounded-lg px-2.5 py-1 hover:bg-emerald-100"><RefreshCw size={12} />重新分析</button>}
             />
             <div className="px-5 pb-4">
               <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50/50 border border-emerald-100 p-4">

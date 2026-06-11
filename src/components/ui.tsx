@@ -78,6 +78,16 @@ export function Tag({ children }: { children: ReactNode }) {
   )
 }
 
+// 试用版未开放功能的统一提示
+export function proToast(feature: string) {
+  const el = document.createElement('div')
+  el.textContent = `「${feature}」为正式版功能 · 试用版暂未开放`
+  el.style.cssText = 'position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:9999;background:#0f172a;color:#fff;font-size:13px;padding:10px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(15,23,42,.25);opacity:0;transition:opacity .2s'
+  document.body.appendChild(el)
+  requestAnimationFrame(() => { el.style.opacity = '1' })
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250) }, 2200)
+}
+
 const FLAGS: Record<string, string> = {
   US: '🇺🇸', MX: '🇲🇽', SA: '🇸🇦', JP: '🇯🇵', FR: '🇫🇷', NG: '🇳🇬',
   AU: '🇦🇺', KR: '🇰🇷', TH: '🇹🇭', AE: '🇦🇪', GB: '🇬🇧', VN: '🇻🇳', CO: '🇨🇴',

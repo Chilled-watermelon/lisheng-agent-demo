@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { getAllCustomers, useStoreVersion } from '../data/store'
 import { LICENSE, daysLeft, analysisLeft } from '../lib/license'
-import { GradeBadge, Flag } from './ui'
+import { GradeBadge, Flag, proToast } from './ui'
 
 const NAV = [
   { to: '/dashboard', label: '仪表盘', icon: LayoutDashboard },
@@ -170,10 +170,10 @@ export default function Layout() {
             )}
           </div>
           <div className="flex items-center gap-5">
-            <div className="relative cursor-pointer">
+            <button className="relative cursor-pointer" onClick={() => proToast('通知中心（A级客户提醒/任务到期推送）')}>
               <BellRing size={18} className="text-slate-500" />
               <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9.5px] rounded-full px-1.5 py-px font-medium">5</span>
-            </div>
+            </button>
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-[12px] font-semibold">黄</div>
               <div className="leading-tight">

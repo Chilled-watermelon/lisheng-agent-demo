@@ -1,5 +1,5 @@
 import { BrainCircuit, Gauge, Tags, FileText, Play, Settings2 } from 'lucide-react'
-import { Card, CardHeader, Tag } from '../components/ui'
+import { Card, CardHeader, Tag, proToast } from '../components/ui'
 import { SCORING_RULES, TAG_LIBRARY } from '../data/customers'
 
 const PIPELINE = [
@@ -27,7 +27,8 @@ export default function AiCenter() {
           <h1 className="text-[20px] font-bold text-slate-800">AI 分析中心</h1>
           <p className="text-[13px] text-slate-400 mt-0.5">评分模型、标签体系与分析任务全部可配置、可追溯</p>
         </div>
-        <button className="flex items-center gap-1.5 text-[12.5px] text-white bg-emerald-600 rounded-lg px-3.5 py-2 hover:bg-emerald-700">
+        <button onClick={() => proToast('手动触发全量分析')}
+          className="flex items-center gap-1.5 text-[12.5px] text-white bg-emerald-600 rounded-lg px-3.5 py-2 hover:bg-emerald-700">
           <Play size={14} /> 手动触发全量分析
         </button>
       </div>
@@ -51,7 +52,7 @@ export default function AiCenter() {
         {/* 评分规则 */}
         <Card>
           <CardHeader title="客户评分模型" sub="0-100 分 · 行为规则 + AI 语义修正 · 支持自定义调整" extra={
-            <button className="flex items-center gap-1 text-[12px] text-slate-600 border border-slate-200 rounded-lg px-2.5 py-1 hover:bg-slate-50"><Settings2 size={12} />编辑规则</button>
+            <button onClick={() => proToast('评分规则编辑')} className="flex items-center gap-1 text-[12px] text-slate-600 border border-slate-200 rounded-lg px-2.5 py-1 hover:bg-slate-50"><Settings2 size={12} />编辑规则</button>
           } />
           <div className="px-5 pb-4">
             <div className="space-y-1">
