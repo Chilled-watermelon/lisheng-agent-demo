@@ -2,7 +2,7 @@
 
 面向餐饮设备出口业务的 AI 客户数据中台与智能分析系统产品原型。模拟数据演示，用于需求确认与方案评审。
 
-**在线演示**：https://chilled-watermelon.github.io/lisheng-agent-demo/ （登录页点「进入系统」）
+**在线演示**：http://wwling.cn/lisheng/ （登录页点「进入系统」；备用地址 https://chilled-watermelon.github.io/lisheng-agent-demo/ ）
 
 ## 页面
 
